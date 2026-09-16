@@ -64,3 +64,89 @@ Booking Summary
 Confirm Booking
  ↓
 Booking_Requests
+
+🔁 High-Level Customer Flow
+
+📱 Customer
+    │
+    ▼
+WhatsApp "Hi"
+    │
+    ▼
+👋 Get Started
+    │
+    ▼
+🏠 Main Menu
+    │
+    ├────────────── 🌍 Tour Packages
+    │                    │
+    │                    ▼
+    │              Destinations
+    │                    │
+    │                    ▼
+    │              Package List
+    │                    │
+    │                    ▼
+    │              Package Details
+    │                    │
+    │                    ▼
+    │              📎 PDF / Media
+    │                    │
+    │                    ▼
+    │              🟢 Book Package
+    │
+    ├────────────── 🕋 Hajj Packages
+    │                    │
+    │                    ▼
+    │              Hajj Package
+    │                    │
+    │                    ▼
+    │              🟢 Book Package
+    │
+    ├────────────── 🕌 Umrah Packages
+    │                    │
+    │                    ▼
+    │              Umrah Package
+    │                    │
+    │                    ▼
+    │              🟢 Book Package
+    │
+    ├────────────── 📍 Office Location
+    │
+    └────────────── 👤 Talk to Human
+                             │
+                             ▼
+                       Human_Requests
+
+
+🟢 Booking
+    │
+    ▼
+🤖 AI Booking Agent
+    │
+    ▼
+📝 Collect 6 Required Details
+    │
+    ▼
+✅ Validate Information
+    │
+    ▼
+📋 Booking Summary
+    │
+    ├── ❌ Cancel → Main Menu
+    │
+    └── ✅ Confirm
+            │
+            ▼
+      Booking Package Router
+            │
+       ┌────┼────┐
+       ▼    ▼    ▼
+     Tour  Hajj Umrah
+       │    │    │
+       └────┼────┘
+            ▼
+    📊 Booking_Requests
+            │
+            ▼
+      ✅ Booking Completed
