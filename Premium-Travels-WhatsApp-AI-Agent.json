@@ -1,0 +1,3904 @@
+{
+  "name": "WhatsApp AI Travel Agent — GitHub Template",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "messages"
+        ],
+        "options": {}
+      },
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1968,
+        2016
+      ],
+      "id": "4849590e-1300-401b-af58-3ec7a7f7c2ee",
+      "name": "WhatsApp Trigger",
+      "webhookId": "<GENERATED_BY_N8N_OR_CONFIGURE_AFTER_IMPORT>"
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "1309399432263958",
+        "recipientPhoneNumber": "+<YOUR_WHATSAPP_NUMBER>",
+        "textBody": "Hello",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        -1968,
+        880
+      ],
+      "id": "f6b725a2-13e5-43cc-840d-7f88ef072c40",
+      "name": "Send message",
+      "webhookId": "<GENERATED_BY_N8N_OR_CONFIGURE_AFTER_IMPORT>"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v26.0/1309399432263958/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "whatsAppApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}\",\n  \"type\": \"interactive\",\n  \"interactive\": {\n    \"type\": \"button\",\n    \"body\": {\n      \"text\": \"Hello 👋\\nWelcome to Premium Travels.\\n\\nClick below to get started.\"\n    },\n    \"action\": {\n      \"buttons\": [\n        {\n          \"type\": \"reply\",\n          \"reply\": {\n            \"id\": \"main_menu\",\n            \"title\": \"Get Started\"\n          }\n        }\n      ]\n    }\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        -496,
+        3120
+      ],
+      "id": "174c6e11-f31f-4889-b289-d4842554e919",
+      "name": "Get Started"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v26.0/1309399432263958/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "whatsAppApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}\",\n  \"type\": \"interactive\",\n  \"interactive\": {\n    \"type\": \"list\",\n    \"header\": {\n      \"type\": \"text\",\n      \"text\": \"Premium Travels ✈️\"\n    },\n    \"body\": {\n      \"text\": \"Welcome! 👋\\n\\nPlease choose a service:\"\n    },\n    \"footer\": {\n      \"text\": \"Premium Travels\"\n    },\n    \"action\": {\n      \"button\": \"Main Menu\",\n      \"sections\": [\n        {\n          \"title\": \"Travel Services ✈️\",\n          \"rows\": [\n            {\n              \"id\": \"explore_tours\",\n              \"title\": \"🌍 Explore Tour Packages\",\n              \"description\": \"Explore our tour destinations\"\n            },\n            {\n              \"id\": \"hajj_packages\",\n              \"title\": \"🕋 Hajj Packages\",\n              \"description\": \"View Hajj packages\"\n            },\n            {\n              \"id\": \"umrah_packages\",\n              \"title\": \"🕌 Umrah Packages\",\n              \"description\": \"View Umrah packages\"\n            },\n            {\n              \"id\": \"office_location\",\n              \"title\": \"📍 Office Location\",\n              \"description\": \"Find our office and contact details\"\n            },\n            {\n              \"id\": \"talk_to_human\",\n              \"title\": \"👤 Talk to a Human\",\n              \"description\": \"Contact our travel team\"\n            }\n          ]\n        }\n      ]\n    }\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        64,
+        1440
+      ],
+      "id": "f7f4af96-5b35-461a-a562-5957327e4407",
+      "name": "Send Main Menu"
+    },
+    {
+      "parameters": {
+        "resource": "table",
+        "operation": "create",
+        "tableName": "User_State",
+        "columns": {
+          "column": [
+            {
+              "name": "phone_number"
+            },
+            {
+              "name": "state"
+            },
+            {
+              "name": "selected_destination"
+            },
+            {
+              "name": "selected_package_id"
+            },
+            {
+              "name": "booking_attempts",
+              "type": "number"
+            },
+            {
+              "name": "booking_session_id"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -1968,
+        4704
+      ],
+      "id": "b52bff67-5bcc-4868-80ae-8d9bf6a93fd8",
+      "name": "User State"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "dataTableId": {
+          "__rl": true,
+          "value": "<YOUR_N8N_DATA_TABLE_ID>",
+          "mode": "list",
+          "cachedResultName": "User_State",
+          "cachedResultUrl": "/projects/<YOUR_N8N_PROJECT_ID>/datatables/<YOUR_N8N_DATA_TABLE_ID>"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "phone_number",
+              "keyValue": "={{ $json.contacts[0].wa_id }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "phone_number": "={{ $json.contacts[0].wa_id }}",
+            "state": "GET_STARTED"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "phone_number",
+              "displayName": "phone_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "state",
+              "displayName": "state",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -160,
+        3120
+      ],
+      "id": "e48e32c8-0ecc-47ad-9637-24ec584c9bc6",
+      "name": "User State Upsert"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "dataTableId": {
+          "__rl": true,
+          "value": "<YOUR_N8N_DATA_TABLE_ID>",
+          "mode": "list",
+          "cachedResultName": "User_State",
+          "cachedResultUrl": "/projects/<YOUR_N8N_PROJECT_ID>/datatables/<YOUR_N8N_DATA_TABLE_ID>"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "phone_number",
+              "keyValue": "={{ $json.contacts[0].wa_id }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "phone_number": "={{ $json.contacts[0].wa_id }}",
+            "state": "MAIN_MENU"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "phone_number",
+              "displayName": "phone_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "state",
+              "displayName": "state",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        288,
+        1440
+      ],
+      "id": "cdcab71f-d0ab-4dd0-9ead-34539d851980",
+      "name": "User State Main Menu"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "<YOUR_GOOGLE_SHEET_ID>",
+          "mode": "list",
+          "cachedResultName": "Premium_Travels_Client_Google_Sheet_Template",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/<YOUR_GOOGLE_SHEET_ID>/edit"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2054245139,
+          "mode": "list",
+          "cachedResultName": "Travel_Packages",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/<YOUR_GOOGLE_SHEET_ID>/edit"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -496,
+        4480
+      ],
+      "id": "36d68244-4a81-49b2-b2de-ba89fa16f8a6",
+      "name": "Get Travel Packages"
+    },
+    {
+      "parameters": {
+        "jsCode": "const destinations = [...new Set(\n  $input.all()\n    .map(item => item.json.Destination)\n    .filter(Boolean)\n)];\n\nreturn destinations.map((destination, index) => ({\n  json: {\n    destination_number: index + 1,\n    destination: destination\n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -160,
+        4480
+      ],
+      "id": "6f9db7bc-60b5-4459-b744-ac6be739da91",
+      "name": "Get Destinations"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v26.0/1309399432263958/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "whatsAppApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\n  \"messaging_product\": \"whatsapp\",\n  \"to\": $(\"Message Router\").item.json.contacts[0].wa_id,\n  \"type\": \"interactive\",\n  \"interactive\": {\n    \"type\": \"list\",\n    \"header\": {\n      \"type\": \"text\",\n      \"text\": \"Premium Travels 🌍\"\n    },\n    \"body\": {\n      \"text\": \"Please select your destination:\"\n    },\n    \"footer\": {\n      \"text\": \"Premium Travels\"\n    },\n    \"action\": {\n      \"button\": \"Destinations\",\n      \"sections\": [\n        {\n          \"title\": \"Tour Destinations\",\n          \"rows\": $json.destinations\n        }\n      ]\n    }\n  }\n} }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        288,
+        4480
+      ],
+      "id": "93a3d110-ba53-47be-a707-a8a2afacba39",
+      "name": "Send Destinations"
+    },
+    {
+      "parameters": {
+        "jsCode": "const destinations = $input.all();\n\nreturn [\n  {\n    json: {\n      destinations: destinations.map((item, index) => ({\n        id: `destination_${index + 1}`,\n        title: item.json.destination,\n        description: `Explore ${item.json.destination}`\n      }))\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        64,
+        4480
+      ],
+      "id": "724d828c-5d86-4497-b382-26c4653a1c8e",
+      "name": "Build Destinations Message"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "<YOUR_GOOGLE_SHEET_ID>",
+          "mode": "list",
+          "cachedResultName": "Premium_Travels_Client_Google_Sheet_Template",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/<YOUR_GOOGLE_SHEET_ID>/edit"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2054245139,
+          "mode": "list",
+          "cachedResultName": "Travel_Packages",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/<YOUR_GOOGLE_SHEET_ID>/edit"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Destination",
+              "lookupValue": "={{ $json.selected_destination }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -160,
+        1968
+      ],
+      "id": "c18c0b71-602b-47c0-ab30-ac042e513ab0",
+      "name": "Get Destination Packages"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "<YOUR_N8N_DATA_TABLE_ID>",
+          "mode": "list",
+          "cachedResultName": "User_State",
+          "cachedResultUrl": "/projects/<YOUR_N8N_PROJECT_ID>/datatables/<YOUR_N8N_DATA_TABLE_ID>"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "phone_number",
+              "keyValue": "={{ $json.contacts[0].wa_id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -1744,
+        2016
+      ],
+      "id": "d40aa7b1-e6dc-4218-8f65-6f1661048560",
+      "name": "Get User State",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const trigger = $('WhatsApp Trigger').item.json;\n\nconst state = $json.state || null;\nconst updatedAt = $json.updatedAt || null;\nconst booking_attempts = $json.booking_attempts || 0;\n\nlet is_new_user = !state;\n\n// Booking process ko maximum 24 hours tak active rakho\nif (state === 'COLLECTING_BOOKING_INFO' && updatedAt) {\n  const lastActivity = new Date(updatedAt).getTime();\n  const now = Date.now();\n\n  const hoursPassed = (now - lastActivity) / (1000 * 60 * 60);\n\n  if (hoursPassed < 24) {\n    is_new_user = false;\n  } else {\n    is_new_user = true;\n  }\n\n} else if (state && updatedAt) {\n  const lastActivity = new Date(updatedAt).getTime();\n  const now = Date.now();\n\n  const minutesPassed = (now - lastActivity) / (1000 * 60);\n\n  if (minutesPassed >= 15) {\n    is_new_user = true;\n  }\n}\n\nreturn [\n  {\n    json: {\n      ...trigger,\n      user_state: state,\n      booking_attempts,\n      is_new_user\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1520,
+        2016
+      ],
+      "id": "581d877f-32cb-470c-9bc0-902b9ae2ac47",
+      "name": "Prepare User Context"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "dataTableId": {
+          "__rl": true,
+          "value": "<YOUR_N8N_DATA_TABLE_ID>",
+          "mode": "list",
+          "cachedResultName": "User_State",
+          "cachedResultUrl": "/projects/<YOUR_N8N_PROJECT_ID>/datatables/<YOUR_N8N_DATA_TABLE_ID>"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "phone_number",
+              "keyValue": "={{ $json.contacts[0].wa_id }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "phone_number": "={{ $json.contacts[0].wa_id }}",
+            "state": "={{ $json.user_state || 'GET_STARTED' }}",
+            "booking_attempts": "={{ $json.user_state === 'COLLECTING_BOOKING_INFO' ? ($json.booking_attempts || 0) + 1 : ($json.booking_attempts || 0) }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "phone_number",
+              "displayName": "phone_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "state",
+              "displayName": "state",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "selected_destination",
+              "displayName": "selected_destination",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "selected_package_id",
+              "displayName": "selected_package_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "booking_attempts",
+              "displayName": "booking_attempts",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -1296,
+        2016
+      ],
+      "id": "49ac2c4b-b0c3-41a6-b853-4db9a4de3a51",
+      "name": "Refresh User Activity"
+    },
+    {
+      "parameters": {
+        "jsCode": "const trigger = $('WhatsApp Trigger').item.json;\nconst context = $('Prepare User Context').item.json;\n\nreturn [\n  {\n    json: {\n      ...trigger,\n      user_state: context.user_state,\n      is_new_user: context.is_new_user,\n      booking_attempts: $json.booking_attempts ?? context.booking_attempts ?? 0\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1072,
+        2016
+      ],
+      "id": "08894c0b-2854-425b-86d2-7fff677a2ea4",
+      "name": "Restore User Context"
+    },
+    {
+      "parameters": {
+        "jsCode": "const packages = $input.all();\n\nreturn [\n  {\n    json: {\n      packages: packages.map((item, index) => ({\n        id: `package_${index + 1}`,\n        title: item.json.Package_Name,\n        description: `${item.json.Duration} • ${item.json.Price} ${item.json.Currency}`,\n        package_number: index + 1\n      }))\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        64,
+        1968
+      ],
+      "id": "db2eb6ed-ccf3-42c5-a0be-f064c8e26800",
+      "name": "Build Package List"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v26.0/1309399432263958/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "whatsAppApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}\",\n  \"type\": \"interactive\",\n  \"interactive\": {\n    \"type\": \"list\",\n    \"header\": {\n      \"type\": \"text\",\n      \"text\": \"Tour Packages ✈️\"\n    },\n    \"body\": {\n      \"text\": \"Please select a package:\"\n    },\n    \"footer\": {\n      \"text\": \"Premium Travels\"\n    },\n    \"action\": {\n      \"button\": \"View Packages\",\n      \"sections\": [\n        {\n          \"title\": \"Available Packages\",\n          \"rows\": {{ JSON.stringify($json.packages.map(({id, title, description}) => ({id, title, description}))) }}\n        }\n      ]\n    }\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        288,
+        1968
+      ],
+      "id": "f7401d85-6ff7-4aa7-9ffe-7f940319e645",
+      "name": "Send Package List"
+    },
+    {
+      "parameters": {
+        "jsCode": "const pkg = $input.first().json;\n\nreturn [\n  {\n    json: {\n      package_id: pkg.Package_ID,\n      destination: pkg.Destination,\n      package_name: pkg.Package_Name,\n      duration: pkg.Duration,\n      price: pkg.Price,\n      currency: pkg.Currency,\n      includes: pkg.Includes,\n      excludes: pkg.Excludes,\n      departure_city: pkg.Departure_City,\n      departure_date: pkg.Departure_Date,\n      description: pkg.Description,\n      media_url: pkg.Media_URL,\n      status: pkg.Status,\n\n      message:\n`🇹🇷 ${pkg.Package_Name}\n\n📅 Duration: ${pkg.Duration}\n\n💰 Price: ${pkg.Price} ${pkg.Currency}\n\n✈️ Departure City: ${pkg.Departure_City}\n\n🗓️ Departure Date: ${pkg.Departure_Date}\n\n✅ Includes:\n${pkg.Includes}\n\n❌ Excludes:\n${pkg.Excludes}\n\n📝 Description:\n${pkg.Description}\n\n📎 Package PDF/Image`\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -160,
+        1776
+      ],
+      "id": "c7b9613b-31e3-4a4d-9acc-47997c0500af",
+      "name": "Build Package Details"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "<YOUR_GOOGLE_SHEET_ID>",
+          "mode": "list",
+          "cachedResultName": "Premium_Travels_Client_Google_Sheet_Template",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/<YOUR_GOOGLE_SHEET_ID>/edit"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2054245139,
+          "mode": "list",
+          "cachedResultName": "Travel_Packages",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/<YOUR_GOOGLE_SHEET_ID>/edit"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Package_Name",
+              "lookupValue": "={{ $json.messages[0].interactive.list_reply.title }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -496,
+        1584
+      ],
+      "id": "75d78491-1b33-446d-8211-8b1460914c2d",
+      "name": "Get Selected Package"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v26.0/1309399432263958/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "whatsAppApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}\",\n  \"type\": \"text\",\n  \"text\": {\n    \"body\": {{ JSON.stringify($('Build Package Details').item.json.message) }}\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        512,
+        1776
+      ],
+      "id": "12cc7af7-a378-415c-b47d-03c0652b408e",
+      "name": "Send Package Details"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "dataTableId": {
+          "__rl": true,
+          "value": "<YOUR_N8N_DATA_TABLE_ID>",
+          "mode": "list",
+          "cachedResultName": "User_State",
+          "cachedResultUrl": "/projects/<YOUR_N8N_PROJECT_ID>/datatables/<YOUR_N8N_DATA_TABLE_ID>"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "phone_number",
+              "keyValue": "={{ $json.contacts[0].wa_id }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "phone_number": "={{ $json.contacts[0].wa_id }}",
+            "state": "={{ $json.user_state }}",
+            "selected_destination": "={{ $json.messages[0].interactive.list_reply.title }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "phone_number",
+              "displayName": "phone_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "state",
+              "displayName": "state",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "selected_destination",
+              "displayName": "selected_destination",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -496,
+        4288
+      ],
+      "id": "2fe70a17-55d8-4c6f-a86e-f9fed67f37ae",
+      "name": "Save Selected Destination"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "<YOUR_N8N_DATA_TABLE_ID>",
+          "mode": "list",
+          "cachedResultName": "User_State",
+          "cachedResultUrl": "/projects/<YOUR_N8N_PROJECT_ID>/datatables/<YOUR_N8N_DATA_TABLE_ID>"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "phone_number",
+              "keyValue": "={{ $json.contacts[0].wa_id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -496,
+        1968
+      ],
+      "id": "ab7e385f-f993-49ed-8977-0f6d75f4dc15",
+      "name": "Get row(s)"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v26.0/1309399432263958/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "whatsAppApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}\",\n  \"type\": \"document\",\n  \"document\": {\n    \"link\": \"{{ $json.media_url }}\",\n    \"filename\": \"{{ $json.package_name }}.pdf\",\n    \"caption\": \"📎 {{ $json.package_name }} Package Details\"\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        64,
+        1776
+      ],
+      "id": "90d8e2d7-76ff-482a-be03-ce79b053c472",
+      "name": "Send Package Media"
+    },
+    {
+      "parameters": {
+        "amount": 2
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        288,
+        1776
+      ],
+      "id": "fb4bd387-03b5-49b6-9afd-1d9dd719572b",
+      "name": "Wait",
+      "webhookId": "<GENERATED_BY_N8N_OR_CONFIGURE_AFTER_IMPORT>"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f3de34d3-8f2c-4e4a-8347-cd419d1ebc6e",
+              "name": "booking_state",
+              "value": "COLLECTING_BOOKING_INFO",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -496,
+        1104
+      ],
+      "id": "155a10a6-5548-4c38-bcf3-02d163f51e9c",
+      "name": "Prepare Booking"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v26.0/1309399432263958/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "whatsAppApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}\",\n  \"type\": \"interactive\",\n  \"interactive\": {\n    \"type\": \"button\",\n    \"body\": {\n      \"text\": \"📝 To book this package, please provide the following information:\\n\\n1️⃣ Full Name\\n2️⃣ CNIC Number\\n3️⃣ Passport Validity\\n4️⃣ Departure City\\n5️⃣ Travel Month\\n6️⃣ Number of Travelers\\n\\nYou can cancel the booking process anytime.\"\n    },\n    \"action\": {\n      \"buttons\": [\n        {\n          \"type\": \"reply\",\n          \"reply\": {\n            \"id\": \"cancel_booking\",\n            \"title\": \"❌ Cancel Booking\"\n          }\n        }\n      ]\n    }\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        64,
+        1104
+      ],
+      "id": "50fd7cfa-adde-4d01-a2f4-23f86b417649",
+      "name": "Send Booking Questions"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "dataTableId": {
+          "__rl": true,
+          "value": "<YOUR_N8N_DATA_TABLE_ID>",
+          "mode": "list",
+          "cachedResultName": "User_State",
+          "cachedResultUrl": "/projects/<YOUR_N8N_PROJECT_ID>/datatables/<YOUR_N8N_DATA_TABLE_ID>"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "phone_number",
+              "keyValue": "={{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "phone_number": "={{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}",
+            "state": "COLLECTING_BOOKING_INFO",
+            "selected_destination": "={{ $('Get User State').item.json.selected_destination }}",
+            "selected_package_id": "={{ $('Get User State').item.json.selected_package_id }}",
+            "booking_attempts": 0,
+            "booking_session_id": "={{ $('WhatsApp Trigger').item.json.contacts[0].wa_id + '-booking-' + Date.now() }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "phone_number",
+              "displayName": "phone_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "state",
+              "displayName": "state",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "selected_destination",
+              "displayName": "selected_destination",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "selected_package_id",
+              "displayName": "selected_package_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "booking_attempts",
+              "displayName": "booking_attempts",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "booking_session_id",
+              "displayName": "booking_session_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -160,
+        1104
+      ],
+      "id": "623d4c99-8460-46e0-9c80-ea338492099f",
+      "name": "Save Booking State"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.messages[0].text?.body || $json.messages[0].interactive?.button_reply?.title || '' }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are the Booking AI Agent for Premium Travels.\n\nYour job is to collect and validate booking information from the customer and prepare the booking for confirmation.\n\nRequired booking information:\n\n1. Full Name\n2. CNIC Number\n3. Passport Validity\n4. Departure City\n5. Travel Month\n6. Number of Travelers\n\n\nBOOKING INFORMATION COLLECTION:\n\n- When collecting booking information one field at a time, always follow this exact sequence:\n\n  1. Full Name\n  2. CNIC Number\n  3. Passport Validity\n  4. Departure City\n  5. Travel Month\n  6. Number of Travelers\n\n- Ask for only the next missing field in this sequence.\n- After the customer provides a valid field, move to the next field.\n- Do not skip the sequence when the customer is providing information one message at a time.\n- If the customer provides a field out of sequence, do not silently accept it as the current field. Politely ask for the currently requested field first.\n- If the customer provides all six required fields together in one message, process and validate all six fields.\n- If multiple required fields are provided in one message, use all valid information provided and ask only for the remaining required information.\n- Never invent, guess, or silently correct customer information.\n- Keep responses short and suitable for WhatsApp.\n\n\nVALIDATION RULES:\n\n- Full Name: Must contain at least 2 words. Do not accept only a single first name.\n\n- CNIC: Must be in valid Pakistani format XXXXX-XXXXXXX-X (13 digits).\n\n- Passport Validity: Must be a valid future date. Reject dates that have already expired.\n\n- Departure City: Must be a real city in Pakistan. If unclear, ask the customer again.\n\n- Travel Month: Must be a real upcoming month/year. Do not accept a month/year that is already in the past.\n\n- Number of Travelers: Must be a positive whole number between 1 and 20. Reject 0, negative numbers, decimals, or unusually large numbers.\n\n- If any information is invalid, ask only for that invalid information again.\n\n- Do not silently change, correct, or guess any customer-provided information.\n\n- Do not mark booking_ready as true until all six required fields are valid.\n\n- Do not create or save a booking until the customer explicitly confirms the final summary.\n\n\nIMPORTANT SEQUENCE BEHAVIOR:\n\nWhen the customer is providing details one at a time, the expected conversation is:\n\nAI: Please provide your Full Name.\nCustomer: Shoaib Asghar\n\nAI: Please provide your CNIC Number.\nCustomer: 31202-5567887-0\n\nAI: Please provide your Passport Validity.\nCustomer: 04-01-2028\n\nAI: Please provide your Departure City.\nCustomer: Karachi\n\nAI: Please provide your Travel Month.\nCustomer: November 2026\n\nAI: Please provide the Number of Travelers.\nCustomer: 2\n\nThen show the final booking summary.\n\nIf the customer sends all six details together in one message, accept and validate them together and do not force the customer to send them one by one.\n\nIf the customer provides multiple valid fields in one message, keep those fields and ask only for the next missing field according to the required sequence.\n\nIf the customer provides an invalid value for the currently requested field, ask only for that field again.\n\n\nFINAL SUMMARY:\n\nAfter all six required fields are valid:\n\n- Show a short final summary containing:\n  Full Name\n  CNIC\n  Passport Validity\n  Departure City\n  Travel Month\n  Number of Travelers\n\n- Show the final booking summary and do not ask the customer to type \"Confirm\".\n\n- The workflow will provide two buttons:\n  ✅ Confirm Booking\n  ❌ Cancel Booking\n\n- The customer must use one of these buttons before the booking can proceed.\n\n- Do not require the customer to type the word \"Confirm\" if the workflow provides a Confirm button. An explicit confirmation through the workflow's confirmation button counts as confirmation.\n\n\nBOOKING CONFIRMATION RULES:\n\n- NEVER claim that a booking has been created, saved, confirmed, or assigned a booking reference before the separate booking workflow completes it.\n\n- NEVER generate or invent a Booking_ID or booking reference.\n\n- NEVER mention payment instructions, invoice, seat preference, or special assistance unless those are provided by another workflow node.\n\n- When the customer explicitly confirms the final summary, set:\n  confirmed = true\n  booking_ready = true\n\n  only if all six required fields are valid.\n\n- For a confirmed booking, the response must simply say that the details have been confirmed and the booking is being processed.\n\n- The actual booking will be created by a separate workflow step after the AI Agent.\n\n- Do not claim that the booking has already been created.\n\n\nCANCELLATION:\n\n- If the customer clearly requests to cancel the booking process, do not continue collecting information.\n- The workflow will handle cancellation separately.\n- Do not claim that the booking was cancelled unless the workflow confirms it.\n\n\nOUTPUT FORMAT — STRICT:\n\nYou must always return ONLY the structured output required by the Output Parser.\n\nNever return normal text outside the structured output.\n\nNever add explanations, markdown, code fences, or extra fields.\n\nThe response field must contain the customer-facing message.\n\nAll other fields must always be present.\n\nIf a field is not yet known, use null.\n\nUse exactly these fields:\n\nresponse\nfull_name\ncnic\npassport_validity\ndeparture_city\ntravel_month\nnumber_of_travelers\nbooking_ready\nconfirmed\n\nbooking_ready must be true only when all six required fields are valid.\n\nconfirmed must be true only when the customer explicitly confirms the final summary or uses the workflow's confirmation button.\n\nEven when the customer sends only one detail, return the complete structured output with unknown fields as null.\n\nThe output must always match the connected Structured Output Parser schema exactly."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -560,
+        3696
+      ],
+      "id": "2a02cf6c-8492-4d94-a838-1206317252b1",
+      "name": "Booking AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -624,
+        3936
+      ],
+      "id": "d906a920-da8e-4954-a985-89e6d73c1e8e",
+      "name": "OpenAI Chat Model"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Get User State').item.json.booking_session_id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -496,
+        3936
+      ],
+      "id": "e34b3c5d-bee5-4127-9430-4247b34f6d0f",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "dataTableId": {
+          "__rl": true,
+          "value": "<YOUR_N8N_DATA_TABLE_ID>",
+          "mode": "list",
+          "cachedResultName": "User_State",
+          "cachedResultUrl": "/projects/<YOUR_N8N_PROJECT_ID>/datatables/<YOUR_N8N_DATA_TABLE_ID>"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "phone_number",
+              "keyValue": "={{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "state": "MAIN_MENU"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "phone_number",
+              "displayName": "phone_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "state",
+              "displayName": "state",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "selected_destination",
+              "displayName": "selected_destination",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "selected_package_id",
+              "displayName": "selected_package_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "booking_attempts",
+              "displayName": "booking_attempts",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -496,
+        1296
+      ],
+      "id": "f5905492-1f98-4f98-bd11-280c5b401627",
+      "name": "Cancel Booking State"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v26.0/1309399432263958/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "whatsAppApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}\",\n  \"type\": \"text\",\n  \"text\": {\n    \"body\": \"❌ Booking process cancelled.\\n\\nYou have been returned to the Main Menu.\"\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        -160,
+        1296
+      ],
+      "id": "879f8142-1756-4439-8ab1-25b491ebb135",
+      "name": "Send Cancellation Message"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v26.0/1309399432263958/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "whatsAppApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}\",\n  \"type\": \"text\",\n  \"text\": {\n    \"body\": {{ JSON.stringify($json.output.response) }}\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        64,
+        3904
+      ],
+      "id": "3b0b1fcd-9590-4628-992e-ac8460a8e36f",
+      "name": "Send Booking AI Response"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"response\": {\n      \"type\": \"string\"\n    },\n    \"full_name\": {\n      \"type\": [\"string\", \"null\"]\n    },\n    \"cnic\": {\n      \"type\": [\"string\", \"null\"]\n    },\n    \"passport_validity\": {\n      \"type\": [\"string\", \"null\"]\n    },\n    \"departure_city\": {\n      \"type\": [\"string\", \"null\"]\n    },\n    \"travel_month\": {\n      \"type\": [\"string\", \"null\"]\n    },\n    \"number_of_travelers\": {\n      \"type\": [\"integer\", \"null\"]\n    },\n    \"booking_ready\": {\n      \"type\": \"boolean\"\n    },\n    \"confirmed\": {\n      \"type\": \"boolean\"\n    }\n  },\n  \"required\": [\n    \"response\",\n    \"full_name\",\n    \"cnic\",\n    \"passport_validity\",\n    \"departure_city\",\n    \"travel_month\",\n    \"number_of_travelers\",\n    \"booking_ready\",\n    \"confirmed\"\n  ],\n  \"additionalProperties\": false\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -368,
+        3936
+      ],
+      "id": "363142d9-aabe-4c68-a8fa-dadc3f71d1f8",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "dataTableId": {
+          "__rl": true,
+          "value": "<YOUR_N8N_DATA_TABLE_ID>",
+          "mode": "list",
+          "cachedResultName": "User_State",
+          "cachedResultUrl": "/projects/<YOUR_N8N_PROJECT_ID>/datatables/<YOUR_N8N_DATA_TABLE_ID>"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "phone_number",
+              "keyValue": "={{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "phone_number": "={{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}",
+            "state": "PACKAGE_DETAILS",
+            "selected_destination": "={{ $('Get User State').item.json.selected_destination }}",
+            "selected_package_id": "={{ $('Get Selected Package').item.json.Package_ID }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "phone_number",
+              "displayName": "phone_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "state",
+              "displayName": "state",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "selected_destination",
+              "displayName": "selected_destination",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "selected_package_id",
+              "displayName": "selected_package_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -160,
+        1584
+      ],
+      "id": "67713fd6-adae-4216-913d-179af5031d2d",
+      "name": "Save Selected Package"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "88493371-b2fa-44dc-9d9e-b33ad64dc43c",
+              "leftValue": "={{ $('Booking AI Agent').item.json.output.confirmed }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        512,
+        3904
+      ],
+      "id": "9d12c05c-38ed-48fc-abe3-c01e401e6f30",
+      "name": "Check Booking Confirmation"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "<YOUR_GOOGLE_SHEET_ID>",
+          "mode": "list",
+          "cachedResultName": "Premium_Travels_Client_Google_Sheet_Template",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/<YOUR_GOOGLE_SHEET_ID>/edit"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 609692096,
+          "mode": "list",
+          "cachedResultName": "Booking_Requests",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/<YOUR_GOOGLE_SHEET_ID>/edit"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Created_At": "={{ $now.toISO() }}",
+            "Booking_ID": "={{ 'PT-' + Date.now() }}",
+            "Customer_Name": "={{ $('Booking AI Agent').item.json.output.full_name }}",
+            "WhatsApp_Number": "={{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}",
+            "Package_ID": "={{ $('Get User State').item.json.selected_package_id }}",
+            "Destination": "={{ $('Get User State').item.json.selected_destination }}",
+            "Package_Name": "={{ $json.package_name }}",
+            "Duration": "={{ $json.duration }}",
+            "Price": "={{ $json.price }}",
+            "Departure_City": "={{ $json.departure_city }}",
+            "Travel_Month": "={{ $('Booking AI Agent').item.json.output.travel_month }}",
+            "CNIC": "={{ $('Booking AI Agent').item.json.output.cnic }}",
+            "Passport_Validity": "={{ $('Booking AI Agent').item.json.output.passport_validity }}",
+            "Travelers": "={{ $('Booking AI Agent').item.json.output.number_of_travelers }}",
+            "Status": "Confirmed"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Booking_ID",
+              "displayName": "Booking_ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Created_At",
+              "displayName": "Created_At",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Customer_Name",
+              "displayName": "Customer_Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "WhatsApp_Number",
+              "displayName": "WhatsApp_Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Package_ID",
+              "displayName": "Package_ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Destination",
+              "displayName": "Destination",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Package_Name",
+              "displayName": "Package_Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Duration",
+              "displayName": "Duration",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Price",
+              "displayName": "Price",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Departure_City",
+              "displayName": "Departure_City",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Travel_Month",
+              "displayName": "Travel_Month",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Travelers",
+              "displayName": "Travelers",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "CNIC",
+              "displayName": "CNIC",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Passport_Validity",
+              "displayName": "Passport_Validity",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Notes",
+              "displayName": "Notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1408,
+        3888
+      ],
+      "id": "4a3ebe13-de58-4f02-8e0d-36f5bad44f4b",
+      "name": "Save Booking Request"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "<YOUR_GOOGLE_SHEET_ID>",
+          "mode": "list",
+          "cachedResultName": "Premium_Travels_Client_Google_Sheet_Template",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/<YOUR_GOOGLE_SHEET_ID>/edit"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2054245139,
+          "mode": "list",
+          "cachedResultName": "Travel_Packages",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/<YOUR_GOOGLE_SHEET_ID>/edit"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Package_ID",
+              "lookupValue": "={{ $('Get User State').item.json.selected_package_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1184,
+        3696
+      ],
+      "id": "0fc30bbd-3deb-415d-8219-770d23897d9c",
+      "name": "Get Booking Package"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "dataTableId": {
+          "__rl": true,
+          "value": "<YOUR_N8N_DATA_TABLE_ID>",
+          "mode": "list",
+          "cachedResultName": "User_State",
+          "cachedResultUrl": "/projects/<YOUR_N8N_PROJECT_ID>/datatables/<YOUR_N8N_DATA_TABLE_ID>"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "phone_number",
+              "keyValue": "={{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "phone_number": "={{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}",
+            "state": "BOOKING_COMPLETED",
+            "selected_destination": "={{ $('Get User State').item.json.selected_destination }}",
+            "selected_package_id": "={{ $('Get User State').item.json.selected_package_id }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "phone_number",
+              "displayName": "phone_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "state",
+              "displayName": "state",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "selected_destination",
+              "displayName": "selected_destination",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "selected_package_id",
+              "displayName": "selected_package_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "booking_attempts",
+              "displayName": "booking_attempts",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1632,
+        3888
+      ],
+      "id": "ef505b1d-c6d3-4415-9865-fcac0fb0a90a",
+      "name": "Complete Booking State"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "e8ab563a-bc7a-464b-9fd7-a3bae8784818",
+              "leftValue": "={{ $('Restore User Context').item.json.booking_attempts }}",
+              "rightValue": 10,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            },
+            {
+              "id": "5aad89c7-7630-40fa-9bd9-285a9018a417",
+              "leftValue": "={{ $json.output.booking_ready }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -160,
+        3808
+      ],
+      "id": "a5b22a9f-786f-4464-a725-ecbb10c4489a",
+      "name": "10 Attempts Check"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v26.0/1309399432263958/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "whatsAppApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}\",\n  \"type\": \"interactive\",\n  \"interactive\": {\n    \"type\": \"button\",\n    \"body\": {\n      \"text\": \"Please confirm your booking details to proceed:\"\n    },\n    \"action\": {\n      \"buttons\": [\n        {\n          \"type\": \"reply\",\n          \"reply\": {\n            \"id\": \"confirm_booking\",\n            \"title\": \"✅ Confirm Booking\"\n          }\n        },\n        {\n          \"type\": \"reply\",\n          \"reply\": {\n            \"id\": \"cancel_booking\",\n            \"title\": \"❌ Cancel Booking\"\n          }\n        }\n      ]\n    }\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        736,
+        4096
+      ],
+      "id": "a5c2eb06-e9f8-40d8-90e1-42e43c5d6a36",
+      "name": "Send Booking Confirmation Buttons"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "6dd7d4d6-6d9d-4509-b780-f183528fc63d",
+              "leftValue": "={{ $('Booking AI Agent').item.json.output.booking_ready }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        288,
+        3904
+      ],
+      "id": "d2bc3358-a395-4af1-94c7-3b98a4dc3f0f",
+      "name": "Booking Ready Check"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.messages[0].interactive.button_reply.id }}",
+                    "rightValue": "main_menu",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "750676dd-9dfc-4a77-b829-eb05a01ace98"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "ca1e456a-54d1-486d-9beb-d0d7fee37b99",
+                    "leftValue": "={{ $json.messages[0].interactive.button_reply.id }}",
+                    "rightValue": "cancel_booking",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "cdab872e-3666-48a2-acdb-01951f72c13d",
+                    "leftValue": "={{ $json.messages[0].interactive?.button_reply?.id }}",
+                    "rightValue": "confirm_booking",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "03dd817e-71a8-4f6d-bf62-6ea3fcadf627",
+                    "leftValue": "={{ $json.user_state }}",
+                    "rightValue": "COLLECTING_BOOKING_INFO",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "c983a5c6-b347-4a24-a01d-cf158a7debe5",
+                    "leftValue": "={{ !$json.is_new_user && !!$json.messages[0].text?.body }}",
+                    "rightValue": "explore_tours",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "0d22857f-c5fe-4969-89cf-55133869701c",
+                    "leftValue": "={{ $json.messages[0].interactive.list_reply.id }}",
+                    "rightValue": "explore_tours",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "ffa7fa7b-e0f8-47b2-9070-7a3c200f1b31",
+                    "leftValue": "={{ $json.is_new_user }}",
+                    "rightValue": "destination_1",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "7e5a2748-a2a3-41e8-ab3c-2e0296855c2f",
+                    "leftValue": "={{ ($json.messages[0].interactive.list_reply.id || '').startsWith('destination_') }}",
+                    "rightValue": "destination_1",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "f5dd485a-563c-4707-8653-b521c9da2ee9",
+                    "leftValue": "={{ ($json.messages[0].interactive.list_reply.id || '').startsWith('package_') }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "54be9e34-93a6-4336-ae80-4ca31f0c39c5",
+                    "leftValue": "={{ $json.messages[0].interactive.button_reply.id }}",
+                    "rightValue": "change_package",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "c6ac98a7-040f-400a-9294-75fe325b94fd",
+                    "leftValue": "={{ $json.messages[0].interactive.button_reply.id }}",
+                    "rightValue": "book_package",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "53539965-0233-4a97-9fa9-1dd6d1f927c3",
+                    "leftValue": "={{ $json.messages[0].interactive?.list_reply?.id }}",
+                    "rightValue": "hajj_packages",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "41546812-eb8b-493f-a453-408f3f2728e0",
+                    "leftValue": "={{ ($json.messages[0].interactive?.list_reply?.id || '').startsWith('hajj_package_') }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "6cab995f-3a07-4416-a388-9e1637898dfe",
+                    "leftValue": "={{ ($json.messages[0].interactive?.list_reply?.id || '').startsWith('umrah_package_') }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "2543e701-1d37-4939-95bd-8b134675877b",
+                    "leftValue": "={{ $json.messages[0].interactive?.list_reply?.id }}",
+                    "rightValue": "umrah_packages",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "8a21e53c-469d-4b36-baf8-167f361f570e",
+                    "leftValue": "={{ $json.messages[0].interactive?.list_reply?.id }}",
+                    "rightValue": "office_location",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "677dc450-91bd-43be-82ba-4399b9851441",
+                    "leftValue": "={{ $json.messages[0].interactive?.list_reply?.id }}",
+                    "rightValue": "talk_to_human",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -848,
+        1776
+      ],
+      "id": "da9fcdb0-c1e8-4d10-8aad-dc084989cd6c",
+      "name": "Message Router"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "<YOUR_GOOGLE_SHEET_ID>",
+          "mode": "list",
+          "cachedResultName": "Premium_Travels_Client_Google_Sheet_Template",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/<YOUR_GOOGLE_SHEET_ID>/edit"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 34641746,
+          "mode": "list",
+          "cachedResultName": "Hajj_Umrah_Packages",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/<YOUR_GOOGLE_SHEET_ID>/edit"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Type",
+              "lookupValue": "Hajj"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -496,
+        4096
+      ],
+      "id": "534c8588-1124-4871-87b9-d6b1145a990b",
+      "name": "Get Hajj Packages"
+    },
+    {
+      "parameters": {
+        "amount": 2
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        288,
+        2352
+      ],
+      "id": "096bb485-0ab9-4d6d-87a1-166117190a72",
+      "name": "Wait1",
+      "webhookId": "<GENERATED_BY_N8N_OR_CONFIGURE_AFTER_IMPORT>"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v26.0/1309399432263958/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "whatsAppApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}\",\n  \"type\": \"interactive\",\n  \"interactive\": {\n    \"type\": \"button\",\n    \"body\": {\n      \"text\": \"What would you like to do?\"\n    },\n    \"action\": {\n      \"buttons\": [\n        {\n          \"type\": \"reply\",\n          \"reply\": {\n            \"id\": \"book_package\",\n            \"title\": \"🟢 Book This Package\"\n          }\n        },\n        {\n          \"type\": \"reply\",\n          \"reply\": {\n            \"id\": \"change_package\",\n            \"title\": \"🔄 Change Package\"\n          }\n        },\n        {\n          \"type\": \"reply\",\n          \"reply\": {\n            \"id\": \"main_menu\",\n            \"title\": \"🏠 Main Menu\"\n          }\n        }\n      ]\n    }\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        736,
+        1776
+      ],
+      "id": "1d11cf06-df76-41e5-b3b1-2787ae30b09f",
+      "name": "Send Package Actions"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v26.0/1309399432263958/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "whatsAppApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}\",\n  \"type\": \"interactive\",\n  \"interactive\": {\n    \"type\": \"button\",\n    \"body\": {\n      \"text\": \"What would you like to do?\"\n    },\n    \"action\": {\n      \"buttons\": [\n        {\n          \"type\": \"reply\",\n          \"reply\": {\n            \"id\": \"book_package\",\n            \"title\": \"🟢 Book This Package\"\n          }\n        },\n        {\n          \"type\": \"reply\",\n          \"reply\": {\n            \"id\": \"change_package\",\n            \"title\": \"🔄 Change Package\"\n          }\n        },\n        {\n          \"type\": \"reply\",\n          \"reply\": {\n            \"id\": \"main_menu\",\n            \"title\": \"🏠 Main Menu\"\n          }\n        }\n      ]\n    }\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        736,
+        2352
+      ],
+      "id": "8967778e-d8f4-43ce-a938-ccde801d7438",
+      "name": "Send Package Actions hajj"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v26.0/1309399432263958/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "whatsAppApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}\",\n  \"type\": \"text\",\n  \"text\": {\n    \"body\": {{ JSON.stringify($('Build Package Details hajj').item.json.message) }}\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        512,
+        2352
+      ],
+      "id": "9cc13785-9889-44b1-a575-af7d17015dda",
+      "name": "Send Package Details hajj"
+    },
+    {
+      "parameters": {
+        "jsCode": "const pkg = $input.first().json;\n\nreturn [\n  {\n    json: {\n      package_id: pkg.Package_ID,\n      type: pkg.Type,\n      package_name: pkg.Package_Name,\n      duration: pkg.Duration,\n      price: pkg.Price,\n      currency: pkg.Currency,\n      includes: pkg.Includes,\n      excludes: pkg.Excludes,\n      departure_city: pkg.Departure_City,\n      departure_date: pkg.Departure_Date,\n      description: pkg.Description,\n      media_url: pkg.Media_URL,\n      status: pkg.Status,\n\n      message:\n`🕋 Hajj Package\n\n📦 ${pkg.Package_Name}\n\n📅 Duration: ${pkg.Duration}\n\n💰 Price: ${pkg.Price} ${pkg.Currency}\n\n✈️ Departure City: ${pkg.Departure_City}\n\n🗓️ Departure Date: ${pkg.Departure_Date}\n\n✅ Includes:\n${pkg.Includes}\n\n❌ Excludes:\n${pkg.Excludes}\n\n📝 Description:\n${pkg.Description}\n\n📎 Package PDF/Image`\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -160,
+        2352
+      ],
+      "id": "92d2f48c-a37d-42a1-8cfb-2d3e9cd6f523",
+      "name": "Build Package Details hajj"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v26.0/1309399432263958/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "whatsAppApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}\",\n  \"type\": \"document\",\n  \"document\": {\n    \"link\": \"{{ $json.media_url }}\",\n    \"filename\": \"{{ $json.package_name }}.pdf\",\n    \"caption\": \"📎 {{ $json.package_name }} Package Details\"\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        64,
+        2352
+      ],
+      "id": "c0f80b65-cd02-40c2-ac10-20d506d93024",
+      "name": "Send Package Media hajj"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "dataTableId": {
+          "__rl": true,
+          "value": "<YOUR_N8N_DATA_TABLE_ID>",
+          "mode": "list",
+          "cachedResultName": "User_State",
+          "cachedResultUrl": "/projects/<YOUR_N8N_PROJECT_ID>/datatables/<YOUR_N8N_DATA_TABLE_ID>"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "phone_number",
+              "keyValue": "={{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "phone_number": "={{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}",
+            "selected_destination": "Hajj",
+            "selected_package_id": "={{ $('Get Selected Hajj Package').item.json.Package_ID }}",
+            "state": "PACKAGE_DETAILS"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "phone_number",
+              "displayName": "phone_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "state",
+              "displayName": "state",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "selected_destination",
+              "displayName": "selected_destination",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "selected_package_id",
+              "displayName": "selected_package_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "booking_attempts",
+              "displayName": "booking_attempts",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "booking_session_id",
+              "displayName": "booking_session_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -160,
+        2160
+      ],
+      "id": "f09cb610-dede-47f2-ac1f-948f346c47ac",
+      "name": "Save Selected Package hajj"
+    },
+    {
+      "parameters": {
+        "jsCode": "const packages = $input.all();\n\nreturn [\n  {\n    json: {\n      packages: packages.map((item, index) => ({\n        id: `hajj_package_${index + 1}`,\n        title: item.json.Package_Name,\n        description: `${item.json.Duration} • ${item.json.Price} ${item.json.Currency}`,\n        package_number: index + 1\n      }))\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -160,
+        4096
+      ],
+      "id": "20a53231-9d3f-4a8f-9b68-7987dbed2254",
+      "name": "Build Hajj Package List"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v26.0/1309399432263958/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "whatsAppApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}\",\n  \"type\": \"interactive\",\n  \"interactive\": {\n    \"type\": \"list\",\n    \"header\": {\n      \"type\": \"text\",\n      \"text\": \"🕋 Hajj Packages\"\n    },\n    \"body\": {\n      \"text\": \"Please select a Hajj package:\"\n    },\n    \"footer\": {\n      \"text\": \"Premium Travels\"\n    },\n    \"action\": {\n      \"button\": \"View Packages\",\n      \"sections\": [\n        {\n          \"title\": \"Available Hajj Packages\",\n          \"rows\": {{ JSON.stringify($json.packages.map(({id, title, description}) => ({\n            id,\n            title,\n            description\n          }))) }}\n        }\n      ]\n    }\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        64,
+        4096
+      ],
+      "id": "819c1cf8-7169-4a1b-843d-89ea483b0fb2",
+      "name": "Send Hajj Package List"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "<YOUR_GOOGLE_SHEET_ID>",
+          "mode": "list",
+          "cachedResultName": "Premium_Travels_Client_Google_Sheet_Template",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/<YOUR_GOOGLE_SHEET_ID>/edit"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 34641746,
+          "mode": "list",
+          "cachedResultName": "Hajj_Packages",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/<YOUR_GOOGLE_SHEET_ID>/edit"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Package_Name",
+              "lookupValue": "={{ $json.messages[0].interactive.list_reply.title }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -496,
+        2160
+      ],
+      "id": "fb4739a2-a569-4ff1-930f-7b9d0167e159",
+      "name": "Get Selected Hajj Package"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "c20d2fe8-d67e-40e0-af1c-03cf5d0dd9d9",
+                    "leftValue": "={{ $('Get User State').item.json.selected_package_id || '' }}",
+                    "rightValue": "HU-",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notStartsWith"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "4b60b30d-4bd5-45b3-b518-826907ec7da2",
+                    "leftValue": "={{ $('Get User State').item.json.selected_package_id || '' }}",
+                    "rightValue": "HU-HAJ-",
+                    "operator": {
+                      "type": "string",
+                      "operation": "startsWith"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "592b82fa-d805-42e6-a15f-1c680a39968c",
+                    "leftValue": "={{ $('Get User State').item.json.selected_package_id || '' }}",
+                    "rightValue": "HU-UMR-",
+                    "operator": {
+                      "type": "string",
+                      "operation": "startsWith"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        736,
+        3872
+      ],
+      "id": "340615cd-6319-493b-80da-596e537f39e2",
+      "name": "Booking Package Router"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "<YOUR_GOOGLE_SHEET_ID>",
+          "mode": "list",
+          "cachedResultName": "Premium_Travels_Client_Google_Sheet_Template",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/<YOUR_GOOGLE_SHEET_ID>/edit"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 34641746,
+          "mode": "list",
+          "cachedResultName": "Hajj_Packages",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/<YOUR_GOOGLE_SHEET_ID>/edit"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Package_ID",
+              "lookupValue": "={{ $('Get User State').item.json.selected_package_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        960,
+        3888
+      ],
+      "id": "29c46f26-b96a-4d00-9f15-d50a66cc6cc5",
+      "name": "Get Hajj Booking Package"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "<YOUR_GOOGLE_SHEET_ID>",
+          "mode": "list",
+          "cachedResultName": "Premium_Travels_Client_Google_Sheet_Template",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/<YOUR_GOOGLE_SHEET_ID>/edit"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1505530108,
+          "mode": "list",
+          "cachedResultName": "Umrah_Packages",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/<YOUR_GOOGLE_SHEET_ID>/edit"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Package_ID",
+              "lookupValue": "={{ $('Get User State').item.json.selected_package_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        960,
+        4080
+      ],
+      "id": "926706f1-f0eb-4fb7-8dd9-538b31b4349b",
+      "name": "Get Umrah Booking Package"
+    },
+    {
+      "parameters": {
+        "jsCode": "const pkg = $input.first().json;\n\nreturn [\n  {\n    json: {\n      package_id: pkg.Package_ID,\n      package_name: pkg.Package_Name,\n      destination: pkg.Destination || \"Hajj\",\n      duration: pkg.Duration,\n      price: pkg.Price,\n      currency: pkg.Currency,\n      departure_city: pkg.Departure_City,\n      travel_month: $('Booking AI Agent').item.json.output.travel_month,\n      travelers: $('Booking AI Agent').item.json.output.number_of_travelers,\n      cnic: $('Booking AI Agent').item.json.output.cnic,\n      passport_validity: $('Booking AI Agent').item.json.output.passport_validity,\n      customer_name: $('Booking AI Agent').item.json.output.full_name,\n      whatsapp_number: $('WhatsApp Trigger').item.json.contacts[0].wa_id\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1184,
+        3888
+      ],
+      "id": "3ff568f6-46af-4192-a494-5cd33a9b7f39",
+      "name": "Prepare Hajj Booking Data"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "<YOUR_GOOGLE_SHEET_ID>",
+          "mode": "list",
+          "cachedResultName": "Premium_Travels_Client_Google_Sheet_Template",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/<YOUR_GOOGLE_SHEET_ID>/edit"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1505530108,
+          "mode": "list",
+          "cachedResultName": "Umrah_Packages",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/<YOUR_GOOGLE_SHEET_ID>/edit"
+        },
+        "filtersUI": {
+          "values": []
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -496,
+        3504
+      ],
+      "id": "4c197cc7-22af-4d89-8025-d447a965d385",
+      "name": "Get umrah Packages"
+    },
+    {
+      "parameters": {
+        "jsCode": "const packages = $input.all();\n\nreturn [\n  {\n    json: {\n      packages: packages.map((item, index) => ({\n        id: `umrah_package_${index + 1}`,\n        title: item.json.Package_Name,\n        description: `${item.json.Duration} • ${item.json.Price} ${item.json.Currency}`,\n        package_number: index + 1\n      }))\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -160,
+        3504
+      ],
+      "id": "861f4353-dcd7-45b6-8eb5-7166caee0b36",
+      "name": "Build Umrah Package List"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v26.0/1309399432263958/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "whatsAppApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}\",\n  \"type\": \"interactive\",\n  \"interactive\": {\n    \"type\": \"list\",\n    \"header\": {\n      \"type\": \"text\",\n      \"text\": \"🕌 Umrah Packages\"\n    },\n    \"body\": {\n      \"text\": \"Please select an Umrah package:\"\n    },\n    \"footer\": {\n      \"text\": \"Premium Travels\"\n    },\n    \"action\": {\n      \"button\": \"View Packages\",\n      \"sections\": [\n        {\n          \"title\": \"Available Umrah Packages\",\n          \"rows\": {{ JSON.stringify($json.packages.map(({id, title, description}) => ({\n            id,\n            title,\n            description\n          }))) }}\n        }\n      ]\n    }\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        64,
+        3504
+      ],
+      "id": "ca656d03-cf96-4b01-ae94-a78be5d6aea2",
+      "name": "Send Umrah Package List"
+    },
+    {
+      "parameters": {
+        "amount": 2
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        288,
+        2736
+      ],
+      "id": "48404fe1-023e-49e1-8acc-8572d434ea28",
+      "name": "Wait2",
+      "webhookId": "<GENERATED_BY_N8N_OR_CONFIGURE_AFTER_IMPORT>"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "<YOUR_GOOGLE_SHEET_ID>",
+          "mode": "list",
+          "cachedResultName": "Premium_Travels_Client_Google_Sheet_Template",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/<YOUR_GOOGLE_SHEET_ID>/edit"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1505530108,
+          "mode": "list",
+          "cachedResultName": "Umrah_Packages",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/<YOUR_GOOGLE_SHEET_ID>/edit"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Package_Name",
+              "lookupValue": "={{ $json.messages[0].interactive.list_reply.title }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -496,
+        2544
+      ],
+      "id": "bba33f26-47df-4420-9f23-251a1a21e28b",
+      "name": "Get Selected Umrah Package"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v26.0/1309399432263958/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "whatsAppApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}\",\n  \"type\": \"document\",\n  \"document\": {\n    \"link\": \"{{ $json.media_url }}\",\n    \"filename\": \"{{ $json.package_name }}.pdf\",\n    \"caption\": \"📎 {{ $json.package_name }} Package Details\"\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        64,
+        2736
+      ],
+      "id": "df1567e3-6487-4306-bd30-2bb8d939a50f",
+      "name": "Send Package Media Umrah"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v26.0/1309399432263958/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "whatsAppApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}\",\n  \"type\": \"text\",\n  \"text\": {\n    \"body\": {{ JSON.stringify($('Build Package Details Umrah').item.json.message) }}\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        512,
+        2736
+      ],
+      "id": "299b6e41-2678-48ff-9b04-c95dc6604adf",
+      "name": "Send Package Details Umrah"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v26.0/1309399432263958/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "whatsAppApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}\",\n  \"type\": \"interactive\",\n  \"interactive\": {\n    \"type\": \"button\",\n    \"body\": {\n      \"text\": \"What would you like to do?\"\n    },\n    \"action\": {\n      \"buttons\": [\n        {\n          \"type\": \"reply\",\n          \"reply\": {\n            \"id\": \"book_package\",\n            \"title\": \"🟢 Book This Package\"\n          }\n        },\n        {\n          \"type\": \"reply\",\n          \"reply\": {\n            \"id\": \"change_package\",\n            \"title\": \"🔄 Change Package\"\n          }\n        },\n        {\n          \"type\": \"reply\",\n          \"reply\": {\n            \"id\": \"main_menu\",\n            \"title\": \"🏠 Main Menu\"\n          }\n        }\n      ]\n    }\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        736,
+        2736
+      ],
+      "id": "5444583a-c440-416a-a4bc-064925e5620d",
+      "name": "Send Package Actions Umrah"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "dataTableId": {
+          "__rl": true,
+          "value": "<YOUR_N8N_DATA_TABLE_ID>",
+          "mode": "list",
+          "cachedResultName": "User_State",
+          "cachedResultUrl": "/projects/<YOUR_N8N_PROJECT_ID>/datatables/<YOUR_N8N_DATA_TABLE_ID>"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "phone_number",
+              "keyValue": "={{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "phone_number": "={{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}",
+            "selected_package_id": "={{ $('Get Selected Umrah Package').item.json.Package_ID }}",
+            "state": "PACKAGE_DETAILS",
+            "selected_destination": "Umrah"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "phone_number",
+              "displayName": "phone_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "state",
+              "displayName": "state",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "selected_destination",
+              "displayName": "selected_destination",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "selected_package_id",
+              "displayName": "selected_package_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "booking_attempts",
+              "displayName": "booking_attempts",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "booking_session_id",
+              "displayName": "booking_session_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -160,
+        2544
+      ],
+      "id": "8e77cf98-b239-4236-a1fd-587a4a23f7a9",
+      "name": "Save Selected Package Umrah"
+    },
+    {
+      "parameters": {
+        "jsCode": "const pkg = $input.first().json;\n\nreturn [\n  {\n    json: {\n      package_id: pkg.Package_ID,\n      type: pkg.Type,\n      package_name: pkg.Package_Name,\n      duration: pkg.Duration,\n      price: pkg.Price,\n      currency: pkg.Currency,\n      includes: pkg.Includes,\n      excludes: pkg.Excludes,\n      departure_city: pkg.Departure_City,\n      departure_date: pkg.Departure_Date,\n      description: pkg.Description,\n      media_url: pkg.Media_URL,\n      status: pkg.Status,\n\n      message:\n`🕌 Umrah Package\n\n📦 ${pkg.Package_Name}\n\n📅 Duration: ${pkg.Duration}\n\n💰 Price: ${pkg.Price} ${pkg.Currency}\n\n✈️ Departure City: ${pkg.Departure_City}\n\n🗓️ Departure Date: ${pkg.Departure_Date}\n\n✅ Includes:\n${pkg.Includes}\n\n❌ Excludes:\n${pkg.Excludes}\n\n📝 Description:\n${pkg.Description}\n\n📎 Package PDF/Image`\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -160,
+        2736
+      ],
+      "id": "2ffdf7ec-ddfb-4831-b824-398e3d7b8a9b",
+      "name": "Build Package Details Umrah"
+    },
+    {
+      "parameters": {
+        "jsCode": "const pkg = $input.first().json;\n\nreturn [\n  {\n    json: {\n      package_id: pkg.Package_ID,\n      package_name: pkg.Package_Name,\n      destination: pkg.Destination || \"Umrah\",\n      duration: pkg.Duration,\n      price: pkg.Price,\n      currency: pkg.Currency,\n      departure_city: pkg.Departure_City,\n      travel_month: $('Booking AI Agent').item.json.output.travel_month,\n      travelers: $('Booking AI Agent').item.json.output.number_of_travelers,\n      cnic: $('Booking AI Agent').item.json.output.cnic,\n      passport_validity: $('Booking AI Agent').item.json.output.passport_validity,\n      customer_name: $('Booking AI Agent').item.json.output.full_name,\n      whatsapp_number: $('WhatsApp Trigger').item.json.contacts[0].wa_id\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1184,
+        4080
+      ],
+      "id": "485f2656-8f00-48fa-9623-ba31cb9f960b",
+      "name": "Prepare Umrah Booking Data"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "<YOUR_GOOGLE_SHEET_ID>",
+          "mode": "list",
+          "cachedResultName": "Premium_Travels_Client_Google_Sheet_Template",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/<YOUR_GOOGLE_SHEET_ID>/edit"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1557596171,
+          "mode": "list",
+          "cachedResultName": "Business_Info",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/<YOUR_GOOGLE_SHEET_ID>/edit"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -496,
+        3312
+      ],
+      "id": "84340156-634c-442f-aebe-5d00eba600d3",
+      "name": "Get Office Info"
+    },
+    {
+      "parameters": {
+        "jsCode": "const info = $input.first().json;\n\nreturn [\n  {\n    json: {\n      business_name: info.Business_Name,\n      address: info.Office_Address,\n      phone: info.Phone,\n      whatsapp: info.WhatsApp,\n      email: info.Email,\n      office_hours: info.Office_Hours,\n      maps_url: info.Google_Maps_URL,\n\n      message:\n`📍 ${info.Business_Name}\n\n🏢 Address:\n${info.Office_Address}\n\n📞 Phone:\n${info.Phone}\n\n📱 WhatsApp:\n${info.WhatsApp}\n\n📧 Email:\n${info.Email}\n\n🕐 Office Hours:\n${info.Office_Hours}\n\n🗺️ Google Maps:\n${info.Google_Maps_URL}`\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -160,
+        3312
+      ],
+      "id": "0a9cd667-a9a8-42ba-9a0b-1a29aa1e3a54",
+      "name": "Build Office Location Message"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v26.0/1309399432263958/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "whatsAppApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}\",\n  \"type\": \"text\",\n  \"text\": {\n    \"body\": {{ JSON.stringify($('Build Office Location Message').item.json.message) }}\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        64,
+        3312
+      ],
+      "id": "dacf9608-908a-42e0-a122-85cb369b4ad8",
+      "name": "Send Office Location"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v26.0/1309399432263958/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "whatsAppApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}\",\n  \"type\": \"interactive\",\n  \"interactive\": {\n    \"type\": \"button\",\n    \"body\": {\n      \"text\": \"What would you like to do?\"\n    },\n    \"action\": {\n      \"buttons\": [\n        {\n          \"type\": \"reply\",\n          \"reply\": {\n            \"id\": \"main_menu\",\n            \"title\": \"🏠 Main Menu\"\n          }\n        }\n      ]\n    }\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        288,
+        3312
+      ],
+      "id": "deb23e22-9ed1-4b9a-a7cd-5d898395762f",
+      "name": "Send Office Location Actions"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "<YOUR_GOOGLE_SHEET_ID>",
+          "mode": "list",
+          "cachedResultName": "Premium_Travels_Client_Google_Sheet_Template",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/<YOUR_GOOGLE_SHEET_ID>/edit"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1168108703,
+          "mode": "list",
+          "cachedResultName": "Human_Requests",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/<YOUR_GOOGLE_SHEET_ID>/edit"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Request_ID": "={{ 'HR-' + Date.now() }}",
+            "Created_At": "={{ $now.toISO() }}",
+            "Customer_Name": "={{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}",
+            "Reason": "Customer requested human assistance",
+            "State": "HUMAN_REQUEST",
+            "Status": "Pending",
+            "WhatsApp_Number": "={{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Request_ID",
+              "displayName": "Request_ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Created_At",
+              "displayName": "Created_At",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Customer_Name",
+              "displayName": "Customer_Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "WhatsApp_Number",
+              "displayName": "WhatsApp_Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Reason",
+              "displayName": "Reason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "State",
+              "displayName": "State",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Staff_Notes",
+              "displayName": "Staff_Notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -496,
+        2928
+      ],
+      "id": "d5aa5616-51a1-47c2-81c2-1f19b81581f1",
+      "name": "Append row in sheet"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v26.0/1309399432263958/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "whatsAppApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}\",\n  \"type\": \"text\",\n  \"text\": {\n    \"body\": \"👤 Your request has been sent to our travel team.\\n\\nOur team will contact you shortly. Thank you for choosing Premium Travels. ✈️\"\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        -160,
+        2928
+      ],
+      "id": "1eeebb59-1620-4a93-bbae-93d60248c9e8",
+      "name": "Send Human Handoff Message"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v26.0/1309399432263958/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "whatsAppApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"to\": \"{{ $('WhatsApp Trigger').item.json.contacts[0].wa_id }}\",\n  \"type\": \"interactive\",\n  \"interactive\": {\n    \"type\": \"button\",\n    \"body\": {\n      \"text\": \"You can return to the Main Menu anytime.\"\n    },\n    \"action\": {\n      \"buttons\": [\n        {\n          \"type\": \"reply\",\n          \"reply\": {\n            \"id\": \"main_menu\",\n            \"title\": \"🏠 Main Menu\"\n          }\n        }\n      ]\n    }\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        64,
+        2928
+      ],
+      "id": "46c70217-15b8-484c-ba24-c2fdbddae209",
+      "name": "Send Human Actions"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "WhatsApp Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get User State",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Started": {
+      "main": [
+        [
+          {
+            "node": "User State Upsert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Main Menu": {
+      "main": [
+        [
+          {
+            "node": "User State Main Menu",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Travel Packages": {
+      "main": [
+        [
+          {
+            "node": "Get Destinations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Destinations": {
+      "main": [
+        [
+          {
+            "node": "Build Destinations Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Destinations": {
+      "main": [
+        []
+      ]
+    },
+    "Build Destinations Message": {
+      "main": [
+        [
+          {
+            "node": "Send Destinations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "User State Main Menu": {
+      "main": [
+        []
+      ]
+    },
+    "Get User State": {
+      "main": [
+        [
+          {
+            "node": "Prepare User Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare User Context": {
+      "main": [
+        [
+          {
+            "node": "Refresh User Activity",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Refresh User Activity": {
+      "main": [
+        [
+          {
+            "node": "Restore User Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Restore User Context": {
+      "main": [
+        [
+          {
+            "node": "Message Router",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Destination Packages": {
+      "main": [
+        [
+          {
+            "node": "Build Package List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Package List": {
+      "main": [
+        [
+          {
+            "node": "Send Package List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Selected Package": {
+      "main": [
+        [
+          {
+            "node": "Build Package Details",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Save Selected Package",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Package Details": {
+      "main": [
+        [
+          {
+            "node": "Send Package Media",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Package Details": {
+      "main": [
+        [
+          {
+            "node": "Send Package Actions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Selected Destination": {
+      "main": [
+        [
+          {
+            "node": "Get Destination Packages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s)": {
+      "main": [
+        [
+          {
+            "node": "Get Destination Packages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Package Media": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Send Package Details",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Booking": {
+      "main": [
+        [
+          {
+            "node": "Save Booking State",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Booking State": {
+      "main": [
+        [
+          {
+            "node": "Send Booking Questions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Booking AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Booking AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cancel Booking State": {
+      "main": [
+        [
+          {
+            "node": "Send Cancellation Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Cancellation Message": {
+      "main": [
+        [
+          {
+            "node": "Send Main Menu",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Booking AI Agent": {
+      "main": [
+        [
+          {
+            "node": "10 Attempts Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Booking AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Selected Package": {
+      "main": [
+        []
+      ]
+    },
+    "Send Booking AI Response": {
+      "main": [
+        [
+          {
+            "node": "Booking Ready Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Booking Confirmation": {
+      "main": [
+        [
+          {
+            "node": "Booking Package Router",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Booking Confirmation Buttons",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Booking Package": {
+      "main": [
+        [
+          {
+            "node": "Save Booking Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Booking Request": {
+      "main": [
+        [
+          {
+            "node": "Complete Booking State",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "10 Attempts Check": {
+      "main": [
+        [
+          {
+            "node": "Send Main Menu",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Booking AI Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Booking Ready Check": {
+      "main": [
+        [
+          {
+            "node": "Check Booking Confirmation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message Router": {
+      "main": [
+        [
+          {
+            "node": "Send Main Menu",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Cancel Booking State",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Booking AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Booking AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Main Menu",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Travel Packages",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Started",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Save Selected Destination",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Selected Package",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get row(s)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Prepare Booking",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Hajj Packages",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Selected Hajj Package",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Selected Umrah Package",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get umrah Packages",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Office Info",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Hajj Packages": {
+      "main": [
+        [
+          {
+            "node": "Build Hajj Package List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "Send Package Details hajj",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Package Details hajj": {
+      "main": [
+        [
+          {
+            "node": "Send Package Actions hajj",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Package Details hajj": {
+      "main": [
+        [
+          {
+            "node": "Send Package Media hajj",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Package Media hajj": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Selected Package hajj": {
+      "main": [
+        []
+      ]
+    },
+    "Build Hajj Package List": {
+      "main": [
+        [
+          {
+            "node": "Send Hajj Package List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Selected Hajj Package": {
+      "main": [
+        [
+          {
+            "node": "Build Package Details hajj",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Save Selected Package hajj",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Booking Package Router": {
+      "main": [
+        [
+          {
+            "node": "Get Booking Package",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Hajj Booking Package",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Umrah Booking Package",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Hajj Booking Package": {
+      "main": [
+        [
+          {
+            "node": "Prepare Hajj Booking Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Hajj Booking Data": {
+      "main": [
+        [
+          {
+            "node": "Save Booking Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get umrah Packages": {
+      "main": [
+        [
+          {
+            "node": "Build Umrah Package List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Umrah Package List": {
+      "main": [
+        [
+          {
+            "node": "Send Umrah Package List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait2": {
+      "main": [
+        [
+          {
+            "node": "Send Package Details Umrah",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Selected Umrah Package": {
+      "main": [
+        [
+          {
+            "node": "Save Selected Package Umrah",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Build Package Details Umrah",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Package Media Umrah": {
+      "main": [
+        [
+          {
+            "node": "Wait2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Package Details Umrah": {
+      "main": [
+        [
+          {
+            "node": "Send Package Actions Umrah",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Package Details Umrah": {
+      "main": [
+        [
+          {
+            "node": "Send Package Media Umrah",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Umrah Booking Package": {
+      "main": [
+        [
+          {
+            "node": "Prepare Umrah Booking Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Umrah Booking Data": {
+      "main": [
+        [
+          {
+            "node": "Save Booking Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Office Info": {
+      "main": [
+        [
+          {
+            "node": "Build Office Location Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Office Location Message": {
+      "main": [
+        [
+          {
+            "node": "Send Office Location",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Office Location": {
+      "main": [
+        [
+          {
+            "node": "Send Office Location Actions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Send Human Handoff Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Human Handoff Message": {
+      "main": [
+        [
+          {
+            "node": "Send Human Actions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "<N8N_VERSIONID_GENERATED_ON_IMPORT>",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "<YOUR_N8N_INSTANCE_ID>"
+  },
+  "nodeGroups": [],
+  "id": "<N8N_ID_GENERATED_ON_IMPORT>",
+  "tags": []
+}
